@@ -13095,7 +13095,6 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
         var myday;
         markday.forEach(function (e) {
           if (e.mark == "myself") {
-            myday = e;
             e.date = today_load[0] + '-' + birthday;
           }
         });
@@ -13108,11 +13107,17 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
       var ymd = today_load[0] + '-' + today_load[1] + '-' + today_load[2];
       markday.forEach(function (e) {
         if (e.date == ymd) {
-          _this.info = e.data + ' ' + e.info;
+          if (e.info) {
+            _this.info = e.info;
+          }
         }
       });
       var nowhourmin = ymd + ' ' + today_load[3] + ':' + today_load[4];
       this.datetimerange = [nowhourmin, nowhourmin];
+      var now_time = today_load[1] + "-" + today_load[2];
+      var now_time3 = today_load[0] + today_load[1] + today_load[2];
+      var now_time4 = today_load[0] + "-" + today_load[1] + "-" + today_load[2];
+      this.calendar = [now_time, now_time, now_time3, now_time3, now_time4];
 
 
 
@@ -13126,7 +13131,8 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
 
 
     },
-    dayChange: function dayChange(dayInfo) {
+    dayChange: function dayChange(dayInfo) {var _this2 = this;
+      this.info = "";
       //日历时间
       this.date = dayInfo["date"];
       var date = dayInfo["date"].slice(5);
@@ -13136,6 +13142,17 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
       var now_time2 = dayInfo["date"].replace(/-/g, ""); //正则表达式搜索替换
       var now_time3 = today_list[0] + today_list[1] + today_list[2];
       this.calendar = [date, now_time, now_time2, now_time3, dayInfo["date"]];
+      __f__("log", this.calendar, " at pages/index/index.vue:231");
+      var markday = this.signList;
+      var today_load = this.today();
+      var ymd = today_load[0] + '-' + today_load[1] + '-' + today_load[2];
+      markday.forEach(function (e) {
+        if (e.date == dayInfo["date"]) {
+          if (e.info) {
+            _this2.info = e.info;
+          }
+        }
+      });
     },
     //播放条进度改变
     videoEnd: function videoEnd() {
@@ -13213,7 +13230,7 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
               url: "../index/index" });
 
           } else if (res.cancel) {
-            __f__("log", '用户点击取消', " at pages/index/index.vue:302");
+            __f__("log", '用户点击取消', " at pages/index/index.vue:319");
           }
         } });
 
@@ -13251,7 +13268,7 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
                     url: "../index/index" });
 
                 } else if (res.cancel) {
-                  __f__("log", '用户点击取消', " at pages/index/index.vue:340");
+                  __f__("log", '用户点击取消', " at pages/index/index.vue:357");
                 }
               } });
 
@@ -13260,7 +13277,7 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
           {
             uni.showToast({
               icon: "error",
-              title: "请先选择日期",
+              title: "请先点击要删除的标签日期",
               duration: 2000 });
 
             break;
@@ -13308,7 +13325,7 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
 
       } else
       {
-        __f__("log", 0, " at pages/index/index.vue:397");
+        __f__("log", 0, " at pages/index/index.vue:414");
       }
     },
     //获取时间组件的值
@@ -13410,7 +13427,19 @@ var _default = { data: function data() {return { styles: {}, date: '', Vshow1: t
         }
     },
     about: function about() {
-      var text = "本应用不收取任何费用，不获取设备任何信息";
+      var text = "本应用不收取任何费用，不获取设备任何信息。\nGitee开源链接:\nhttps://gitee.com/muyi456/KizunaAI";
+      uni.showModal({
+        title: '关于',
+        content: text,
+        showCancel: false,
+        success: function success(res) {
+          if (res.confirm) {
+            __f__("log", '用户点击确定', " at pages/index/index.vue:523");
+          } else if (res.cancel) {
+            __f__("log", '用户点击取消', " at pages/index/index.vue:525");
+          }
+        } });
+
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/lib/format-log.js */ 46)["default"]))
 

@@ -181,7 +181,6 @@
 					var myday
 					markday.forEach((e)=>{
 						if(e.mark == "myself"){
-							myday = e
 							e.date = today_load[0] + '-' + birthday
 						}
 					})
@@ -194,11 +193,17 @@
 				var ymd = today_load[0] + '-' + today_load[1] + '-' + today_load[2]
 				markday.forEach((e)=>{
 					if(e.date == ymd){
-						this.info = e.data + ' ' + e.info
+						if(e.info){
+							this.info = e.info
+						}
 					}
 				})
 				var nowhourmin = ymd +' ' + today_load[3] + ':' + today_load[4]
 				this.datetimerange = [nowhourmin,nowhourmin]
+				var now_time = today_load[1] + "-" + today_load[2]
+				var now_time3 = today_load[0] + today_load[1] + today_load[2]
+				var now_time4 = today_load[0] + "-" + today_load[1] + "-" + today_load[2]
+				this.calendar = [now_time,now_time,now_time3,now_time3,now_time4]
 				// #ifdef APP-NVUE
 				this.styles = {
 					justifyContent: 'center',
@@ -213,6 +218,7 @@
 				// #endif
 			},
 			dayChange(dayInfo) {
+				this.info = ""
 				//日历时间
 				this.date = dayInfo["date"]
 				var date = dayInfo["date"].slice(5)
@@ -222,6 +228,17 @@
 				var now_time2 = dayInfo["date"].replace(/-/g,"") //正则表达式搜索替换
 				var now_time3 = today_list[0] + today_list[1] + today_list[2]
 				this.calendar = [date,now_time,now_time2,now_time3,dayInfo["date"]]
+				console.log(this.calendar)
+				var markday = this.signList
+				var today_load = this.today()
+				var ymd = today_load[0] + '-' + today_load[1] + '-' + today_load[2]
+				markday.forEach((e)=>{
+					if(e.date == dayInfo["date"]){
+						if(e.info){
+							this.info = e.info
+						}
+					}
+				})
 			},
 			//播放条进度改变
 			videoEnd(){
@@ -346,7 +363,7 @@
 						else{
 							uni.showToast({
 								icon:"error",
-								title:"请先选择日期",
+								title:"请先点击要删除的标签日期",
 								duration: 2000
 							})
 							break
