@@ -496,7 +496,19 @@
 				}
 			},
 			about(){
-				var text = "本应用不收取任何费用，不获取设备任何信息"
+				var text = "本应用不收取任何费用，不获取设备任何信息。\nGitee开源链接:\nhttps://gitee.com/muyi456/KizunaAI"
+				uni.showModal({
+					title: '关于',
+					content: text,
+					showCancel:false,
+					success: function (res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
 			}
 		}
 	}
