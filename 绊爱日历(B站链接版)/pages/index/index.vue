@@ -149,26 +149,39 @@
 						date: '2022-02-26',
 						title: 'HelloWorld',
 						info:'Kizuna AI The Last Live “hello, world 2022”'
+					},
+					{
+						date: '2017-11-14',
+						title: '花Q',
+						info:'【生化危机7】#19 愉快的视频鉴赏会！ Party前夜！【A.I.Games】'
 					}
 				]
 				var oldvideo = uni.getStorageSync("oldvideo")
 				var birthday = uni.getStorageSync("birthday")//生日缓存
+				console.log(birthday)
 				var mark_day = uni.getStorageSync("markList")//标签缓存
 				if(oldvideo != ''){
 					this.old_video_chencked = oldvideo
 				}
+				//添加固定标签
 				if(mark_day){
-					//添加固定标签
-					date_mark.forEach((e)=>{
-						if(mark_day.indexOf(e) == -1){
-							mark_day.push(e)
-						}
-					})
+					var lock1 = mark_day.find(e => e.title == "100w")
+					var lock2 = mark_day.find(e => e.title == "自我介绍")
+					var lock3 = mark_day.find(e => e.title == "HelloWorld")
+					switch(undefined){
+						case lock1:
+							mark_day.push(date_mark[0])
+						case lock2:
+							mark_day.push(date_mark[1])
+						case lock3:
+							mark_day.push(date_mark[2])
+					}
 					this.signList = mark_day
 				}
 				else{
 					this.signList = date_mark
 				}
+				console.log(mark_day)
 				var markday = this.signList
 				var today_load = this.today()
 				//修改追加生日
@@ -177,15 +190,12 @@
 					msg['date'] = today_load[0] + '-' + birthday
 					msg['title'] = '生日'
 					msg['mark'] = 'myself'
-					var day_index = markday.indexOf(msg)
-					var myday
-					markday.forEach((e)=>{
-						if(e.mark == "myself"){
-							e.date = today_load[0] + '-' + birthday
-						}
-					})
-					if(!myday){
+					var mark = markday.find(e => e.mark == "myself")
+					if(mark == undefined){
 						markday.push(msg)
+					}
+					else if(mark.date != msg.date){
+						mark.date = msg.date
 					}
 					this.signList = markday
 				}
@@ -228,7 +238,6 @@
 				var now_time2 = dayInfo["date"].replace(/-/g,"") //正则表达式搜索替换
 				var now_time3 = today_list[0] + today_list[1] + today_list[2]
 				this.calendar = [date,now_time,now_time2,now_time3,dayInfo["date"]]
-				console.log(this.calendar)
 				var markday = this.signList
 				var today_load = this.today()
 				var ymd = today_load[0] + '-' + today_load[1] + '-' + today_load[2]
@@ -300,13 +309,15 @@
 							var today_load = that.today()
 							var ymd = today_load[0] + '-' + today_load[1] + '-' + today_load[2]
 							var markday = that.signList
+							var new_markday = []
 							markday.forEach((e)=>{
-								if(e.date < ymd){
-									markday.splice(markday.indexOf(e),1)//删除过期标签
+								if(e.date >= ymd){
+									new_markday.push(e)
 								}
 							})
-							uni.setStorageSync("markList",markday)
-							this.signList = markday
+							uni.setStorageSync("markList",new_markday)
+							this.signList = new_markday
+							uni.getSubNVueById('bili').close()//关闭原子窗口
 							uni.showToast({
 								icon:"success",
 								title:"已清除",
@@ -345,6 +356,7 @@
 										})
 										uni.setStorageSync("markList",markday)
 										that.signList = markday
+										uni.getSubNVueById('bili').close()//关闭原子窗口
 										uni.showToast({
 											icon:"success",
 											title:"已删除",
@@ -370,6 +382,7 @@
 						}
 					//刷新页面
 					case 2:
+						uni.getSubNVueById('bili').close()//关闭原子窗口
 						uni.navigateTo({
 							url:"../index/index"
 						})
@@ -377,6 +390,7 @@
 					//播放视频
 					case 3:
 						if(this.calendar){
+							console.log(this.calendar)
 							this.get_video(this.calendar)
 							break
 						}
@@ -406,6 +420,7 @@
 						title:"设置成功",
 						duration: 2000
 					})
+					uni.getSubNVueById('bili').close()//关闭原子窗口
 					uni.navigateTo({
 						url:"../index/index"
 					})
@@ -435,53 +450,61 @@
 					if(value[2] <= value[3]){
 						//日期匹配打开弹窗
 						//生日时播放
-						switch(birthday){
-							case value[0]: case value[1]:
-								uni.getSubNVueById('bili').show()//打开子窗体
-								//子窗体传值
-								uni.$emit('day',{
-									date:value[0],
-									vu:"https://player.bilibili.com/player.html?aid=14031615&bvid=BV1zx411t7Pb&cid=22914934&page=1"
-								})
-								break
-							default:
-								switch(value[4]){
-									//初次见面
-									case '2016-02-01':
-										// 打开 nvue 子窗体
-										uni.getSubNVueById('bili').show()
-										uni.$emit('day',{
-											date:value[0],
-											vu:'https://player.bilibili.com/player.html?aid=9800170&bvid=BV1ox411S7Q7&cid=16201929&page=1'
-										})
-										break
-									//一百万订阅
-									case '2017-12-18':
-										// 打开 nvue 子窗体
-										uni.getSubNVueById('bili').show()
-										uni.$emit('day',{
-											date:value[0],
-											vu:'https://player.bilibili.com/player.html?aid=17398095&bvid=BV1PW41187pj&cid=28420987&page=1'
-										})
-										break
-									//Hello World 2022
-									case '2022-02-26':
-										// 打开 nvue 子窗体
-										uni.getSubNVueById('bili').show()
-										uni.$emit('day',{
-											date:value[0],
-											vu:'https://player.bilibili.com/player.html?aid=724474890&bvid=BV1mS4y167M7&cid=700067873&page=1'
-										})
-										break
-									default:
-										var videoList = videourl[value[0]]
-										// 打开 nvue 子窗体
-										uni.getSubNVueById('bili').show()
-										uni.$emit('day',{
-											date:value[0],
-											vu:"https:" + videoList[Math.floor(Math.random()*videoList.length)]
-										})
-								}
+						if(birthday == value[0] && birthday == value[1]){
+							uni.getSubNVueById('bili').show()//打开子窗体
+							//子窗体传值
+							uni.$emit('day',{
+								date:value[0],
+								vu:"https://player.bilibili.com/player.html?aid=14031615&bvid=BV1zx411t7Pb&cid=22914934&page=1"
+							})
+						}
+						else{
+							switch(value[4]){
+								//初次见面
+								case '2016-02-01':
+									// 打开 nvue 子窗体
+									uni.getSubNVueById('bili').show()
+									uni.$emit('day',{
+										date:value[0],
+										vu:'https://player.bilibili.com/player.html?aid=9800170&bvid=BV1ox411S7Q7&cid=16201929&page=1'
+									})
+									break
+								//一百万订阅
+								case '2017-12-18':
+									// 打开 nvue 子窗体
+									uni.getSubNVueById('bili').show()
+									uni.$emit('day',{
+										date:value[0],
+										vu:'https://player.bilibili.com/player.html?aid=17398095&bvid=BV1PW41187pj&cid=28420987&page=1'
+									})
+									break
+								//Hello World 2022
+								case '2022-02-26':
+									// 打开 nvue 子窗体
+									uni.getSubNVueById('bili').show()
+									uni.$emit('day',{
+										date:value[0],
+										vu:'https://player.bilibili.com/player.html?aid=724474890&bvid=BV1mS4y167M7&cid=700067873&page=1'
+									})
+									break
+								//花Q最初视频
+								case '2017-11-14':
+									// 打开 nvue 子窗体
+									uni.getSubNVueById('bili').show()
+									uni.$emit('day',{
+										date:value[0],
+										vu:'https://player.bilibili.com/player.html?aid=17483397&bvid=BV1hW41187E4&cid=28553647&page=1'
+									})
+									break
+								default:
+									var videoList = videourl[value[0]]
+									// 打开 nvue 子窗体
+									uni.getSubNVueById('bili').show()
+									uni.$emit('day',{
+										date:value[0],
+										vu:"https:" + videoList[Math.floor(Math.random()*videoList.length)]
+									})
+							}
 						}
 					}
 				}
