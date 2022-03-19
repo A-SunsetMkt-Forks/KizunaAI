@@ -369,16 +369,21 @@
 										console.log('用户点击取消');
 									}
 								}
-							});
-							break
+							})
 						}
 						else{
-							uni.showToast({
-								icon:"error",
-								title:"请先点击要删除的标签日期",
-								duration: 2000
+							uni.showModal({
+								title: '提醒',
+								content: "请先点击要删除的标签日期",
+								showCancel:false,
+								success: function (res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+									} else if (res.cancel) {
+										console.log('用户点击取消');
+									}
+								}
 							})
-							break
 						}
 					//刷新页面
 					case 2:
@@ -391,8 +396,7 @@
 					case 3:
 						if(this.calendar){
 							console.log(this.calendar)
-							this.get_video(this.calendar)
-							break
+							that.get_video(this.calendar)
 						}
 						else{
 							uni.showToast({
@@ -400,7 +404,6 @@
 								title:"请先选择日期",
 								duration: 2000
 							})
-							break
 						}
 				}
 			},
@@ -443,7 +446,6 @@
 			get_video(value){
 				var videourl = videoUrl.data
 				var birthday = uni.getStorageSync("birthday")
-				//
 				//播放过去日期的视频
 				if(this.old_video_chencked){
 					//当日期小于等于现在的日期时
@@ -498,12 +500,21 @@
 									break
 								default:
 									var videoList = videourl[value[0]]
-									// 打开 nvue 子窗体
-									uni.getSubNVueById('bili').show()
-									uni.$emit('day',{
-										date:value[0],
-										vu:"https:" + videoList[Math.floor(Math.random()*videoList.length)]
-									})
+									if(videoList != undefined){
+										// 打开 nvue 子窗体
+										uni.getSubNVueById('bili').show()
+										uni.$emit('day',{
+											date:value[0],
+											vu:"https:" + videoList[Math.floor(Math.random()*videoList.length)]
+										})
+									}
+									else{
+										uni.showToast({
+											icon:"error",
+											title:value[0] + "没有视频",
+											duration: 2000
+										})
+									}
 							}
 						}
 					}
