@@ -2,7 +2,7 @@
 	<view>
 		<view>
 			<!--导航栏-->
-			<uni-nav-bar backgroundColor="#F586A4" shadow="true" rightIcon="arrow-right"  @clickRight="skip" color="#FFFFFF" title="Hello World"/>
+			<uni-nav-bar backgroundColor="#EE4F87" shadow="true" rightIcon="arrow-right"  @clickRight="skip" color="#FFFFFF" title="Hello World"/>
 		</view>
 		<view>
 			<video id="myVideo" src="" :style="{'width': winWidth, 'height': winHeight}" autoplay="true" @ended="end"></video>	

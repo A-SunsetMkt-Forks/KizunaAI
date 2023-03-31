@@ -97,7 +97,7 @@
             "path" : "pages/index/mbirthday/mbirthday",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "修改生日",
                 "enablePullDownRefresh": false
             }
             
@@ -111,11 +111,21 @@
             }
             
         }
+        ,{
+            "path" : "pages/index/baike/baike",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "绊爱百科",
+                "enablePullDownRefresh": false,
+				"navigationStyle": "custom"
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "日历",
-		"navigationBarBackgroundColor": "#F586A4",
-		"backgroundColor": "#F586A4"
+		"navigationBarBackgroundColor": "#EE4F87",
+		"backgroundColor": "#EE4F87"
 	}
 }
